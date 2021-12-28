@@ -9,6 +9,8 @@
 
  This module allows GM users to shift status effect icons off tokens, allowing the full token art to be visible even when multiple status effect icons are present.
 
- Icons can also be scaled to either a selected grid size (e.g. 3x3 icons) or by inputting a specific icon scale. Non-modded scaling behaviour can be be reproduced by setting the Custom Grid Size setting to "Custom Scale" and setting the Custom Icon Scale to 1.
+ Icons can also be scaled to either a selected grid size (e.g. 3x3 icons) or by inputting a specific icon scale.
+ 
+ Non-modded scaling behaviour can be be reproduced by setting the Custom Grid Size setting to "Custom Scale" and setting the Custom Icon Scale to 1.
 
 <img src="/img/status-icon-tweaks.png">
