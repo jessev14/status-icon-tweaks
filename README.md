@@ -13,4 +13,4 @@
  
  Non-modded scaling behaviour can be be reproduced by setting the Custom Grid Size setting to "Custom Scale" and setting the Custom Icon Scale to 1.
 
-<img src="/img/status-icon-tweaks.png">
+<img src="/img/status-icon-tweaks.png" width="400">
