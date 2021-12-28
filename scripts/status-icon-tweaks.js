@@ -23,8 +23,8 @@ Hooks.once("init", () => {
     });
     
     game.settings.register(moduleName, "customGrid", {
-        name: "SIT.settings.shiftIcons.customGrid.name",
-        hint: "SIT.settings.shiftIcons.customGrid.hint",
+        name: "SIT.settings.customGrid.name",
+        hint: "SIT.settings.customGrid.hint",
         scope: "world",
         config: true,
         type: String,
