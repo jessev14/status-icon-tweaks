@@ -1,0 +1,27 @@
+{
+    "SIT": {
+        "settings": {
+            "shiftIcons": {
+                "name": "Shift Icons",
+                "disabled": "Disabled",
+                "above": "Above Token",
+                "below": "Below Token",
+                "left": "Left of Token",
+                "right": "Right of Token"
+            },
+            "customGrid": {
+                "name": "Custom Grid Size",
+                "hint": "Icon will be scaled based on token size.",
+                "6": "6x6 (Small icons)",
+                "5": "5x5 (Default icon size)",
+                "4": "4x4 (Large icons)",
+                "3": "3x3 (Largest icons)",
+                "customScale": "Custom Scale (see setting below)"
+            },
+            "scaleIcons": {
+                "name": "Custom Icon Scale",
+                "hint": "Custom scale only applied if above setting is set to Custom Scale."
+            }
+        }
+    }
+}
