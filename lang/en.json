@@ -9,6 +9,10 @@
                 "left": "Left of Token",
                 "right": "Right of Token"
             },
+            "offsetDistance": {
+                "name": "Offset Distance",
+                "hint": "Positive offset will move icons further away from token. Default: 0."
+            },
             "customGrid": {
                 "name": "Custom Grid Size",
                 "hint": "Icon will be scaled based on token size.",

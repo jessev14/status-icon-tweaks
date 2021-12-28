@@ -21,6 +21,21 @@ Hooks.once("init", () => {
         default: "disable",
         onChange: () => window.location.reload()
     });
+
+    game.settings.register(moduleName, "offsetDistance", {
+        name: "SIT.settings.offsetDistance.name",
+        hint: "SIT.settings.offsetDistance.hint",
+        scope: "world",
+        config: true,
+        type: Number,
+        range: {
+            min: -1,
+            max: 1,
+            step: 0.1
+        },
+        default: 0,
+        onChange: () => window.location.reload()
+    });
     
     game.settings.register(moduleName, "customGrid", {
         name: "SIT.settings.customGrid.name",
@@ -77,6 +92,7 @@ async function newDrawEffects(wrapped) {
     for (let i = 1; i < this.hud.effects.children.length; i++) {
         if (this.hud.effects.children[i].alpha === 0.8) continue;
 
+        const offset = game.settings.get(moduleName, "offsetDistance") * -1 * w;
         let nr = Math.floor(tokenHeight / w);
         let x = Math.floor((i - 1) / nr) * w;
         let y = ((i - 1) % nr) * w;
@@ -84,21 +100,21 @@ async function newDrawEffects(wrapped) {
             case "above":
                 nr = Math.floor(tokenWidth / w);
                 x = ((i - 1) % nr) * w;
-                y = Math.floor((i - 1) / nr) * w * -1 - w;
+                y = Math.floor((i - 1) / nr) * w * -1 - w + offset;
                 break;
             case "below":
                 nr = Math.floor(tokenWidth / w);
                 x = ((i - 1) % nr) * w;
-                y = Math.floor((i - 1) / nr) * w + tokenHeight;
+                y = Math.floor((i - 1) / nr) * w + tokenHeight + offset;
                 break;
             case "left":
                 nr = Math.floor(tokenHeight / w);
-                x = Math.floor((i - 1) / nr) * w * -1 - w;
+                x = Math.floor((i - 1) / nr) * w * -1 - w + offset;
                 y = ((i - 1) % nr) * w;
                 break;
             case "right":
                 nr = Math.floor(tokenHeight / w);
-                x = Math.floor((i - 1) / nr) * w + tokenWidth;
+                x = Math.floor((i - 1) / nr) * w + tokenWidth + offset;
                 y = ((i - 1) % nr) * w;
         }
         this.hud.effects.children[i].width = this.hud.effects.children[i].height = w;
