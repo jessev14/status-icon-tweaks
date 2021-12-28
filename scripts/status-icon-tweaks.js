@@ -79,7 +79,7 @@ async function newDrawEffects(wrapped) {
     if (!this.hud.effects?.children?.length) return;
 
     // destroy original background and replace with a copy at the same index
-    this.hud.effects.children.find(c => c.pluginName === "smooth").destroy();
+    this.hud.effects.children.find(c => c.pluginName === "smooth")?.destroy();
 
     // re-set effect sprite positions and draw new backgrounds with new sprite position
     const tokenWidth = this.data.width * canvas.grid.size;
