@@ -1,31 +1,28 @@
-import { libWrapper } from '../lib/shim.js';
+const moduleID = 'status-icon-tweaks';
 
 
-const moduleName = "status-icon-tweaks";
-
-
-Hooks.once("init", () => {
-    game.settings.register(moduleName, "shiftIcons", {
-        name: "SIT.settings.shiftIcons.name",
-        hint: "",
-        scope: "world",
+Hooks.once('init', () => {
+    game.settings.register(moduleID, 'shiftIcons', {
+        name: 'SIT.settings.shiftIcons.name',
+        hint: '',
+        scope: 'world',
         config: true,
         type: String,
         choices: {
-            disable: game.i18n.localize("SIT.settings.shiftIcons.disabled"),
-            above: game.i18n.localize("SIT.settings.shiftIcons.above"),
-            below: game.i18n.localize("SIT.settings.shiftIcons.below"),
-            left: game.i18n.localize("SIT.settings.shiftIcons.left"),
-            right: game.i18n.localize("SIT.settings.shiftIcons.right")
+            disable: game.i18n.localize('SIT.settings.shiftIcons.disabled'),
+            above: game.i18n.localize('SIT.settings.shiftIcons.above'),
+            below: game.i18n.localize('SIT.settings.shiftIcons.below'),
+            left: game.i18n.localize('SIT.settings.shiftIcons.left'),
+            right: game.i18n.localize('SIT.settings.shiftIcons.right')
         },
-        default: "disable",
-        onChange: () => window.location.reload()
+        default: 'disable',
+        requiresReload: true
     });
 
-    game.settings.register(moduleName, "offsetDistance", {
-        name: "SIT.settings.offsetDistance.name",
-        hint: "SIT.settings.offsetDistance.hint",
-        scope: "world",
+    game.settings.register(moduleID, 'offsetDistance', {
+        name: 'SIT.settings.offsetDistance.name',
+        hint: 'SIT.settings.offsetDistance.hint',
+        scope: 'world',
         config: true,
         type: Number,
         range: {
@@ -34,30 +31,30 @@ Hooks.once("init", () => {
             step: 0.1
         },
         default: 0,
-        onChange: () => window.location.reload()
+        requiresReload: true
     });
-    
-    game.settings.register(moduleName, "customGrid", {
-        name: "SIT.settings.customGrid.name",
-        hint: "SIT.settings.customGrid.hint",
-        scope: "world",
+
+    game.settings.register(moduleID, 'customGrid', {
+        name: 'SIT.settings.customGrid.name',
+        hint: 'SIT.settings.customGrid.hint',
+        scope: 'world',
         config: true,
         type: String,
         choices: {
-            6: game.i18n.localize("SIT.settings.customGrid.6"),
-            5: game.i18n.localize("SIT.settings.customGrid.5"),
-            4: game.i18n.localize("SIT.settings.customGrid.4"),
-            3: game.i18n.localize("SIT.settings.customGrid.3"),
-            customScale: game.i18n.localize("SIT.settings.customGrid.customScale")           
+            6: game.i18n.localize('SIT.settings.customGrid.6'),
+            5: game.i18n.localize('SIT.settings.customGrid.5'),
+            4: game.i18n.localize('SIT.settings.customGrid.4'),
+            3: game.i18n.localize('SIT.settings.customGrid.3'),
+            customScale: game.i18n.localize('SIT.settings.customGrid.customScale')
         },
         default: 5,
-        onChange: () => window.location.reload()
+        requiresReload: true
     });
 
-    game.settings.register(moduleName, "scaleIcons", {
-        name: "SIT.settings.scaleIcons.name",
-        hint: "SIT.settings.scaleIcons.hint",
-        scope: "world",
+    game.settings.register(moduleID, 'scaleIcons', {
+        name: 'SIT.settings.scaleIcons.name',
+        hint: 'SIT.settings.scaleIcons.hint',
+        scope: 'world',
         config: true,
         type: Number,
         default: 1,
@@ -66,59 +63,43 @@ Hooks.once("init", () => {
             max: 3,
             step: 0.1
         },
-        onChange: () => window.location.reload()
+        requiresReload: true
     });
 
-    libWrapper.register(moduleName, "Token.prototype.drawEffects", newDrawEffects, "WRAPPER");
+    libWrapper.register(moduleID, 'Token.prototype._refreshEffects', newRefreshEffects, 'WRAPPER');
 });
 
-async function newDrawEffects(wrapped) {
-    // call original method to create status sprites and background
-    await wrapped();
 
-    if (!this.hud.effects?.children?.length) return;
+function newRefreshEffects(wrapped) {
+    wrapped();
 
-    // destroy original background and replace with a copy at the same index
-    this.hud.effects.children.find(c => c.pluginName === "smooth")?.destroy();
+    const iconShift = game.settings.get(moduleID, 'shiftIcons');
+    const effectsInCols = ['left', 'right'].includes(iconShift);
+    const w = game.settings.get(moduleID, 'customGrid') === 'customScale'
+        ? game.settings.get(moduleID, 'scaleIcons') * Math.round(canvas.dimensions.size / 2 / 5) * 2
+        : (effectsInCols ? this.w : this.h) / parseInt(game.settings.get(moduleID, 'customGrid'));
+    const offset = game.settings.get(moduleID, 'offsetDistance') * w;
+    let rowsCols;
+    if (typeof(game.settings.get(moduleID, 'customGrid')) === 'number') rowsCols = Math.floor((effectsInCols ? this.document.height : this.document.width) * game.settings.get(moduleID, 'customGrid'));
+    else rowsCols = Math.floor((effectsInCols ? this.w : this.h) / w);
+    const bg = this.effects.bg.clear().beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
 
-    // re-set effect sprite positions and draw new backgrounds with new sprite position
-    const tokenWidth = this.data.width * canvas.grid.size;
-    const tokenHeight = this.data.height * canvas.grid.size;
-    const w = game.settings.get(moduleName, "customGrid") === "customScale" 
-        ? game.settings.get(moduleName, "scaleIcons") * Math.round(canvas.dimensions.size / 2 / 5) * 2
-        : tokenWidth / parseInt(game.settings.get(moduleName, "customGrid"));
-    const newBG = this.hud.effects.addChildAt(new PIXI.Graphics(), 0).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
+    let i = 0;
+    for (const effect of this.effects.children) {
+        if (effect === bg || effect === this.effects.overlay) continue;
 
-    for (let i = 1; i < this.hud.effects.children.length; i++) {
-        if (this.hud.effects.children[i].alpha === 0.8) continue;
-
-        const offset = game.settings.get(moduleName, "offsetDistance") * -1 * w;
-        let nr = Math.floor(tokenHeight / w);
-        let x = Math.floor((i - 1) / nr) * w;
-        let y = ((i - 1) % nr) * w;
-        switch (game.settings.get(moduleName, "shiftIcons")) {
-            case "above":
-                nr = Math.floor(tokenWidth / w);
-                x = ((i - 1) % nr) * w;
-                y = Math.floor((i - 1) / nr) * w * -1 - w + offset;
-                break;
-            case "below":
-                nr = Math.floor(tokenWidth / w);
-                x = ((i - 1) % nr) * w;
-                y = Math.floor((i - 1) / nr) * w + tokenHeight + offset;
-                break;
-            case "left":
-                nr = Math.floor(tokenHeight / w);
-                x = Math.floor((i - 1) / nr) * w * -1 - w + offset;
-                y = ((i - 1) % nr) * w;
-                break;
-            case "right":
-                nr = Math.floor(tokenHeight / w);
-                x = Math.floor((i - 1) / nr) * w + tokenWidth + offset;
-                y = ((i - 1) % nr) * w;
+        effect.width = effect.height = w;      
+        if (effectsInCols) {
+            if (iconShift === 'left') effect.x = Math.floor( i / rowsCols) * w * -1 - w - offset;
+            else effect.x = effect.x = this.w + Math.floor(i / rowsCols) * w + offset;
+            effect.y = (i % rowsCols) * w;
+        } else {
+            effect.x = (i % rowsCols) * w;
+            if (iconShift === 'above') effect.y = Math.floor(i / rowsCols) * -w - w - offset;
+            else effect.y = this.h + Math.floor(i / rowsCols) * w + offset;
         }
-        this.hud.effects.children[i].width = this.hud.effects.children[i].height = w;
-        this.hud.effects.children[i].position.set(x, y);
-        newBG.drawRoundedRect(x + 1, y + 1, w - 2, w - 2, 2);
+
+        bg.drawRoundedRect(effect.x + 1, effect.y + 1, w - 2, w - 2, 2);
+        i++;
     }
 }

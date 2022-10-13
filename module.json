@@ -1,11 +1,31 @@
 {
-    "name": "status-icon-tweaks",
+    "id": "status-icon-tweaks",
     "title": "Status Icon Tweaks",
     "description": "",
-    "author": "enso#0361",
+    "authors": [
+        {
+            "name": "enso",
+            "discord": "enso#0361",
+            "flags": {}
+        }
+    ],
     "version": "1.0.0",
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9",
+    "compatibility": {
+        "minimum": "10",
+        "verified": "10"
+    },
+    "relationships": {
+        "requires": [
+            {
+                "id": "libwrapper",
+                "compatibility": {
+                    "minimum": "1.12.0.0",
+                    "verified": "1."
+                },
+                "type": "module"
+            }
+        ]
+    },
     "esmodules": [
         "./scripts/status-icon-tweaks.js"
     ],

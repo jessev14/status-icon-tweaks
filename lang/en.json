@@ -24,7 +24,7 @@
             },
             "scaleIcons": {
                 "name": "Custom Icon Scale",
-                "hint": "Custom scale only applied if above setting is set to Custom Scale. Scale will be applied equally to all tokens."
+                "hint": "Based on default effect size. Custom scale only applied if above setting is set to Custom Scale. Scale will be applied equally to all tokens."
             }
         }
     }
