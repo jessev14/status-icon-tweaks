@@ -74,7 +74,7 @@ function newRefreshEffects(wrapped) {
     wrapped();
 
     const iconShift = game.settings.get(moduleID, 'shiftIcons');
-    const effectsInCols = ['left', 'right'].includes(iconShift);
+    const effectsInCols = ['left', 'right', 'disable'].includes(iconShift);
     const w = game.settings.get(moduleID, 'customGrid') === 'customScale'
         ? game.settings.get(moduleID, 'scaleIcons') * Math.round(canvas.dimensions.size / 2 / 5) * 2
         : (effectsInCols ? this.w : this.h) / parseInt(game.settings.get(moduleID, 'customGrid'));
@@ -91,6 +91,7 @@ function newRefreshEffects(wrapped) {
         effect.width = effect.height = w;      
         if (effectsInCols) {
             if (iconShift === 'left') effect.x = Math.floor( i / rowsCols) * w * -1 - w - offset;
+            else if (iconShift === 'disable') effect.x = Math.floor( i / rowsCols) * w - offset;
             else effect.x = effect.x = this.w + Math.floor(i / rowsCols) * w + offset;
             effect.y = (i % rowsCols) * w;
         } else {
